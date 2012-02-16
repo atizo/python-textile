@@ -328,7 +328,7 @@ class Textile(object):
         #Replace line-initial bullets with asterisks
         bullet_pattern = re.compile(u'^•', re.U | re.M)
 
-        pattern = re.compile(r'^([#*]+%s .*)$(?![^#*])'
+        pattern = re.compile(r'^ ?([#*-]+%s .*)$(?![^#*-])'
                              % self.c, re.U | re.M | re.S)
         return pattern.sub(self.fList, bullet_pattern.sub('*', text))
 
@@ -342,12 +342,12 @@ class Textile(object):
             except IndexError:
                 nextline = ''
 
-            m = re.search(r"^([#*]+)(%s%s) (.*)$" % (self.align_re,
+            m = re.search(r"^ ?([#*-]+)(%s%s) (.*)$" % (self.align_re,
                                                      self.c), line, re.S)
             if m:
                 tl, atts, content = m.groups()
                 nl = ''
-                nm = re.search(r'^([#*]+)\s.*', nextline)
+                nm = re.search(r'^ ?([#*-]+)\s.*', nextline)
                 if nm:
                     nl = nm.group(1)
                 if tl not in lists:
@@ -382,10 +382,10 @@ class Textile(object):
 
     def doBr(self, match):
         if self.html_type == 'html':
-            content = re.sub(r'(.+)(?:(?<!<br>)|(?<!<br />))\n(?![#*\s|])', '\\1<br>',
+            content = re.sub(r'(.+)(?:(?<!<br>)|(?<!<br />))\n(?![#*\-\s|])', '\\1<br>',
                              match.group(3))
         else:
-            content = re.sub(r'(.+)(?:(?<!<br>)|(?<!<br />))\n(?![#*\s|])', '\\1<br />',
+            content = re.sub(r'(.+)(?:(?<!<br>)|(?<!<br />))\n(?![#*\-\s|])', '\\1<br />',
                              match.group(3))
         return '<%s%s>%s%s' % (match.group(1), match.group(2),
                                content, match.group(4))
@@ -877,7 +877,7 @@ class Textile(object):
         >>> t.span(r"hello %(bob)span *strong* and **bold**% goodbye")
         'hello <span class="bob">span <strong>strong</strong> and <b>bold</b></span> goodbye'
         """
-        qtags = (r'\*\*', r'\*', r'\?\?', r'\-', r'__',
+        qtags = (r'\*\*', r'\*', r'\?\?', r'__',
                  r'_', r'%', r'\+', r'~', r'\^')
         pnct = ".,\"'?!;:("
 
@@ -904,7 +904,7 @@ class Textile(object):
                 '??': 'cite',
                  '_': 'em',
                 '__': 'i',
-                 '-': 'del',
+                 #'-': 'del',
                  '%': 'span',
                  '+': 'ins',
                  '~': 'sub',
