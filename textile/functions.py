@@ -23,6 +23,7 @@ import uuid
 import string
 import urlparse
 import urllib
+from django.utils.safestring import mark_safe
 
 from textile.tools import sanitizer, imagesize
 
@@ -1032,8 +1033,8 @@ def textile(text, head_offset=0, html_type='xhtml', auto_link=False,
     html_type - 'xhtml' or 'html' style tags (default: 'xhtml')
 
     """
-    return Textile(auto_link=auto_link).textile(text, head_offset=head_offset,
-                                                  html_type=html_type)
+    return mark_safe(Textile(auto_link=auto_link).textile(text, head_offset=head_offset,
+                                                  html_type=html_type))
 
 
 def textile_restricted(text, lite=True, noimage=True, html_type='xhtml',
@@ -1051,6 +1052,6 @@ def textile_restricted(text, lite=True, noimage=True, html_type='xhtml',
     noimage - disable image tags (default: True)
 
     """
-    return Textile(restricted=True, lite=lite,
+    return mark_safe(Textile(restricted=True, lite=lite,
                    noimage=noimage, auto_link=auto_link).textile(
-        text, rel='nofollow', html_type=html_type)
+        text, rel='nofollow', html_type=html_type))
