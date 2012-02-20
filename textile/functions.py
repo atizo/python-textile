@@ -82,13 +82,14 @@ class Textile(object):
     )
 
     def __init__(self, restricted=False, lite=False, noimage=False,
-                 auto_link=False, get_sizes=False):
+                 auto_link=False, get_sizes=False, max_link_length=None):
         """docstring for __init__"""
         self.restricted = restricted
         self.lite = lite
         self.noimage = noimage
         self.get_sizes = get_sizes
         self.auto_link = auto_link
+        self.max_link_length = max_link_length
         self.fn = {}
         self.urlrefs = {}
         self.shelf = {}
@@ -814,6 +815,10 @@ class Textile(object):
 
         if not self.noimage:
             text = self.image(text)
+        elif self.max_link_length is not None:
+            # shorten link text
+            if len(text) > self.max_link_length:
+                text = '%s...' % text[:self.max_link_length]
 
         text = self.span(text)
         text = self.glyphs(text)
@@ -1022,7 +1027,7 @@ class Textile(object):
 
 
 def textile(text, head_offset=0, html_type='xhtml', auto_link=False,
-            encoding=None, output=None):
+            encoding=None, output=None, max_link_length=None):
     """
     Apply Textile to a block of text.
 
@@ -1033,12 +1038,12 @@ def textile(text, head_offset=0, html_type='xhtml', auto_link=False,
     html_type - 'xhtml' or 'html' style tags (default: 'xhtml')
 
     """
-    return mark_safe(Textile(auto_link=auto_link).textile(text, head_offset=head_offset,
+    return mark_safe(Textile(auto_link=auto_link, max_link_length=max_link_length).textile(text, head_offset=head_offset,
                                                   html_type=html_type))
 
 
 def textile_restricted(text, lite=True, noimage=True, html_type='xhtml',
-                       auto_link=False):
+                       auto_link=False, max_link_length=None):
     """
     Apply Textile to a block of text, with restrictions designed for weblog
     comments and other untrusted input.  Raw HTML is escaped, style attributes
@@ -1053,5 +1058,6 @@ def textile_restricted(text, lite=True, noimage=True, html_type='xhtml',
 
     """
     return mark_safe(Textile(restricted=True, lite=lite,
-                   noimage=noimage, auto_link=auto_link).textile(
+                   noimage=noimage, auto_link=auto_link,
+                   max_link_length=max_link_length).textile(
         text, rel='nofollow', html_type=html_type))
