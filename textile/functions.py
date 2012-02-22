@@ -797,6 +797,8 @@ class Textile(object):
         if pre == None:
             pre = ''
 
+        is_auto_link = text == url
+
         # assume ) at the end of the url is not actually part of the url
         # unless the url also contains a (
         if url.endswith(')') and not url.find('(') > -1:
@@ -815,10 +817,10 @@ class Textile(object):
 
         if not self.noimage:
             text = self.image(text)
-        elif self.max_link_length is not None:
+        elif is_auto_link and self.max_link_length is not None and \
+                len(text) > self.max_link_length:
             # shorten link text
-            if len(text) > self.max_link_length:
-                text = '%s...' % text[:self.max_link_length]
+            text = '%s...' % text[:self.max_link_length]
 
         text = self.span(text)
         text = self.glyphs(text)
