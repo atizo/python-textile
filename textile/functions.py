@@ -791,6 +791,21 @@ class Textile(object):
 
         return text
 
+    def atizoIdeaLinks(self, text):
+        """
+        Replace Atizo idea links like:
+        https://www.atizo.com/projects/ideas/1368/supermarkt-der-zukunft/idea/223/
+        with: #223
+        """
+        matches = re.match(
+            r'^.*/projects/ideas/(?P<idea_project_id>\d+)/(?P<idea_project_slug>[\w\-]+)/idea/(?P<idea_contignous_id>\d+)/$',
+            text
+        )
+        if matches:
+            return u'#%s' % matches.groupdict()['idea_contignous_id']
+
+        return text
+
     def fLink(self, match):
         pre, atts, text, title, url, post = match.groups()
 
@@ -815,6 +830,8 @@ class Textile(object):
         if title:
             atts = atts + ' title="%s"' % self.encode_html(title)
 
+        text = self.atizoIdeaLinks(text)
+        
         if not self.noimage:
             text = self.image(text)
         elif is_auto_link and self.max_link_length is not None and \
