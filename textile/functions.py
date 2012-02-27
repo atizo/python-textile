@@ -327,12 +327,16 @@ class Textile(object):
         '\\t<ul>\\n\\t\\t<li>one</li>\\n\\t\\t<li>two</li>\\n\\t\\t<li>three</li>\\n\\t</ul>'
         """
 
-        #Replace line-initial bullets with asterisks
-        bullet_pattern = re.compile(u'^•', re.U | re.M)
+        #Replace line-initial bullets with asterisks and fix multiple bullets
+        bullet_pattern = re.compile(u'^ *•|^ *\*+', re.U | re.M)
+
+        #Fix multiple hashes
+        number_pattern = re.compile(u'^ *#+', re.U | re.M)
 
         pattern = re.compile(r'^ ?([#*-]+%s .*)$(?![^#*-])'
                              % self.c, re.U | re.M | re.S)
-        return pattern.sub(self.fList, bullet_pattern.sub('*', text))
+        text = number_pattern.sub('#', bullet_pattern.sub('*', text))
+        return pattern.sub(self.fList, text)
 
     def fList(self, match):
         text = match.group(0).split("\n")
