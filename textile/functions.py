@@ -328,7 +328,7 @@ class Textile(object):
         """
 
         #Replace line-initial bullets with asterisks and fix multiple bullets
-        bullet_pattern = re.compile(u'^ *•|^ *\*+', re.U | re.M)
+        bullet_pattern = re.compile(u'^ *•+|^ *\*+|^ *-+', re.U | re.M)
 
         #Fix multiple hashes
         number_pattern = re.compile(u'^ *#+', re.U | re.M)
