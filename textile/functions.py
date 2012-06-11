@@ -802,7 +802,7 @@ class Textile(object):
         with: #223
         """
         matches = re.match(
-            r'^.*/projects/ideas/(?P<idea_project_id>\d+)/(?P<idea_project_slug>[\w\-]+)/idea/(?P<idea_contignous_id>\d+)/$',
+            r'^.*/projects/ideas/(?P<idea_project_id>\d+)/(?P<idea_project_slug>[\w\-]+)/(?:id|idea)/(?P<idea_contignous_id>\d+)/$',
             text
         )
         if matches:
